@@ -57,7 +57,12 @@
     max-width: 600px;
   }
 
-  .row { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
+  .row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
   button, select, input[type=number], input[type=text], label {
     padding: 8px 15px;
@@ -69,7 +74,7 @@
     color: #000;
   }
 
-  button:hover, select:hover, input:hover { background: #00ccaa; }
+  button:hover, input:hover { background: #00ccaa; }
 
   #target {
     margin-top: 15px;
@@ -90,7 +95,7 @@
     font-size: 40px;
   }
 
-  input#input {
+  #input {
     padding: 10px;
     font-size: 18px;
     width: 100%;
@@ -102,7 +107,10 @@
     border-radius: 6px;
   }
 
-  #status, #timer, #progress { margin-top: 10px; font-size: 18px; }
+  #status, #timer, #progress {
+    margin-top: 10px;
+    font-size: 18px;
+  }
 
   #leaderboard {
     display: none;
@@ -117,35 +125,54 @@
     max-height: 400px;
   }
 
-  #leaderboard h3 { margin: 0 0 10px 0; text-align: center; }
-  #leaderboard ol { padding-left: 20px; margin:0; }
+  #leaderboard h3 {
+    margin: 0 0 10px 0;
+    text-align: center;
+  }
+
+  #leaderboard ol {
+    padding-left: 20px;
+    margin: 0;
+  }
 </style>
 </head>
 <body>
 
 <div id="sidebar">
-  <button onclick="showGame()">Typing Game</button>
-  <button onclick="showLeaderboard()">Leaderboard</button>
+  <button type="button" onclick="showGame()">Typing Game</button>
+  <button type="button" onclick="showLeaderboard()">Leaderboard</button>
 </div>
 
 <div id="main">
   <div id="gameContainer" class="container">
     <div class="row">
-      <label>Number of Characters: <input type="number" id="numChars" value="10" min="6" max="100"></label>
-      <label><input type="checkbox" id="otherLang"> Include Other Languages</label>
+      <label>
+        Number of Characters:
+        <input type="number" id="numChars" value="10" min="6" max="100">
+      </label>
+      <label>
+        <input type="checkbox" id="otherLang"> Include Other Languages
+      </label>
     </div>
 
     <div class="row">
-      <label>Characters Set: <input type="text" id="charSet" value="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}<>?/|"></label>
+      <label>
+        Characters Set:
+        <input type="text" id="charSet"
+          value="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}<>?/|">
+      </label>
     </div>
 
     <div class="row">
-      <label>Bot Speed (WPM): <input type="number" id="botSpeed" value="200" min="10" max="1000"></label>
+      <label>
+        Bot Speed (WPM):
+        <input type="number" id="botSpeed" value="200" min="10" max="1000">
+      </label>
     </div>
 
     <div class="row">
-      <button onclick="startGame(false)">START</button>
-      <button onclick="startGame(true)">START BOT</button>
+      <button type="button" onclick="startGame(false)">START</button>
+      <button type="button" onclick="startGame(true)">START BOT</button>
     </div>
 
     <div id="target">----------</div>
@@ -167,72 +194,74 @@ let startTime = 0;
 let timeLimit = 20;
 let countdown;
 let botInterval;
+
 const otherLangChars = "αβγδεЖЩあいう漢字";
-let leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+let leaderboard = JSON.parse(localStorage.getItem("leaderboard") || "[]");
 
 function showLeaderboard() {
-  document.getElementById('gameContainer').style.display = 'none';
-  document.getElementById('leaderboard').style.display = 'flex';
+  gameContainer.style.display = "none";
+  leaderboardDiv.style.display = "flex";
   renderLeaderboard();
 }
 
 function showGame() {
-  document.getElementById('leaderboard').style.display = 'none';
-  document.getElementById('gameContainer').style.display = 'flex';
+  leaderboardDiv.style.display = "none";
+  gameContainer.style.display = "flex";
 }
 
-function updateLeaderboard(entry) {
-  if(entry.characters < 6 || entry.bot) return; // skip entries not allowed
-  leaderboard.push(entry);
-  leaderboard.sort((a,b) => a.time - b.time);
-  if(leaderboard.length > 10) leaderboard = leaderboard.slice(0,10);
-  localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-}
+const leaderboardDiv = document.getElementById("leaderboard");
 
 function renderLeaderboard() {
-  const scoresEl = document.getElementById('scores');
-  scoresEl.innerHTML = '';
+  scores.innerHTML = "";
   leaderboard.forEach(entry => {
-    if(entry.characters >=6 && !entry.bot){
-      let li = document.createElement('li');
-      li.textContent = `${entry.characters} chars - ${entry.time}s`;
-      scoresEl.appendChild(li);
+    if (entry.characters >= 6 && !entry.bot) {
+      const li = document.createElement("li");
+      li.textContent =
+        `${entry.email} — ${entry.characters} chars — ${entry.time}s`;
+      scores.appendChild(li);
     }
   });
 }
 
 function adjustFontSizeToFitBox(el) {
-  let fontSize = 40;
-  el.style.fontSize = fontSize + 'px';
-  while ((el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight) && fontSize > 10) {
-    fontSize -= 1;
-    el.style.fontSize = fontSize + 'px';
+  let size = 40;
+  el.style.fontSize = size + "px";
+  while (
+    (el.scrollWidth > el.clientWidth ||
+     el.scrollHeight > el.clientHeight) &&
+    size > 10
+  ) {
+    size--;
+    el.style.fontSize = size + "px";
   }
 }
 
 function startGame(forceBot) {
   clearInterval(countdown);
   clearInterval(botInterval);
-  status.textContent = '';
-  timer.textContent = 'Time: 20.00';
-  progress.textContent = '0 / 0';
 
-  const length = Math.max(6, parseInt(numChars.value) || 10);
-  let customChars = charSet.value || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}<>?/|';
-  if (otherLang.checked) customChars += otherLangChars;
+  status.textContent = "";
+  timer.textContent = "Time: 20.00";
+  progress.textContent = "0 / 0";
 
-  answer = '';
-  for (let i = 0; i < length; i++) answer += customChars[Math.floor(Math.random() * customChars.length)];
+  const length = Math.max(6, Number(numChars.value) || 10);
+  let chars = charSet.value;
+  if (otherLang.checked) chars += otherLangChars;
 
-  const targetEl = document.getElementById('target');
-  targetEl.textContent = answer;
-  adjustFontSizeToFitBox(targetEl);
+  answer = "";
+  for (let i = 0; i < length; i++) {
+    answer += chars[Math.floor(Math.random() * chars.length)];
+  }
 
-  input.value = '';
+  target.textContent = answer;
+  adjustFontSizeToFitBox(target);
+
+  input.value = "";
   input.disabled = false;
   input.focus();
-  startTime = performance.now();
+
   progress.textContent = `0 / ${answer.length}`;
+  startTime = performance.now();
 
   countdown = setInterval(updateTimer, 50);
 
@@ -240,29 +269,29 @@ function startGame(forceBot) {
 }
 
 function updateTimer() {
-  let elapsed = (performance.now() - startTime) / 1000;
-  let remaining = (timeLimit - elapsed).toFixed(2);
+  const elapsed = (performance.now() - startTime) / 1000;
+  const remaining = (timeLimit - elapsed).toFixed(2);
+
   timer.textContent = `Time: ${remaining}`;
+
   if (remaining <= 0) {
     clearInterval(countdown);
     clearInterval(botInterval);
     input.disabled = true;
-    timer.textContent = 'Time: 0.00';
-    status.textContent = '❌ skill issue blud';
+    status.textContent = "❌ skill issue blud";
   }
 }
 
-input.addEventListener('input', () => {
+input.addEventListener("input", () => {
   progress.textContent = `${input.value.length} / ${answer.length}`;
   if (input.value === answer) finish(false);
 });
 
 function runBot() {
-  input.value = '';
   let i = 0;
-  let wpm = parseInt(document.getElementById('botSpeed').value) || 200;
-  const charsPerSec = (wpm * 5) / 60;
-  const intervalMs = 1000 / charsPerSec;
+  const wpm = Number(botSpeed.value) || 200;
+  const cps = (wpm * 5) / 60;
+  const interval = 1000 / cps;
 
   botInterval = setInterval(() => {
     if (i >= answer.length) {
@@ -271,20 +300,38 @@ function runBot() {
       return;
     }
     input.value += answer[i++];
-    progress.textContent = `${input.value.length} / ${answer.length}`;
-  }, intervalMs);
+    progress.textContent = `${i} / ${answer.length}`;
+  }, interval);
 }
 
 function finish(bot) {
   clearInterval(countdown);
   clearInterval(botInterval);
   input.disabled = true;
-  let timeTaken = ((performance.now() - startTime) / 1000).toFixed(2);
+
+  const timeTaken =
+    ((performance.now() - startTime) / 1000).toFixed(2);
+
   status.textContent = `✔ Completed in ${timeTaken}s`;
-  updateLeaderboard({characters: answer.length, time: timeTaken, bot: bot});
+
+  if (bot || answer.length < 6) return;
+
+  const email = prompt("Typing Challenge wants your email:");
+  if (!email) return;
+
+  leaderboard.push({
+    email: email,
+    characters: answer.length,
+    time: timeTaken,
+    bot: false
+  });
+
+  leaderboard.sort((a, b) => a.time - b.time);
+  leaderboard = leaderboard.slice(0, 10);
+
+  localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
 }
 </script>
 
 </body>
 </html>
-
