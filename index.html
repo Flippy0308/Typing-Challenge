@@ -1,4 +1,172 @@
+<!--
+© 2025 FLIPPY0308
+Do not copy, modify, or redistribute
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Typing Challenge</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    background: #111;
+    color: #00ffcc;
+    font-family: monospace;
+  }
+
+  #sidebar {
+    width: 200px;
+    background: rgba(0,0,0,0.8);
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #sidebar button {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    background: #00ffcc;
+    color: #000;
+    cursor: pointer;
+  }
+
+  #sidebar button:hover { background: #00ccaa; }
+
+  #main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px #00ffcc;
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .row { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
+
+  button, select, input[type=number], input[type=text], label {
+    padding: 8px 15px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: #00ffcc;
+    color: #000;
+  }
+
+  button:hover, select:hover, input:hover { background: #00ccaa; }
+
+  #target {
+    margin-top: 15px;
+    user-select: none;
+    padding: 10px 15px;
+    border: 2px solid #00ffcc;
+    border-radius: 8px;
+    background: #000;
+    width: 100%;
+    height: 150px;
+    text-align: center;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+  }
+
+  input#input {
+    padding: 10px;
+    font-size: 18px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+    background: #000;
+    color: #00ffcc;
+    border: 2px solid #00ffcc;
+    border-radius: 6px;
+  }
+
+  #status, #timer, #progress { margin-top: 10px; font-size: 18px; }
+
+  #leaderboard {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(0,0,0,0.7);
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    overflow-y: auto;
+    max-height: 400px;
+  }
+
+  #leaderboard h3 { margin: 0 0 10px 0; text-align: center; }
+  #leaderboard ol { padding-left: 20px; margin:0; }
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <button onclick="showGame()">Typing Game</button>
+  <button onclick="showLeaderboard()">Leaderboard</button>
+</div>
+
+<div id="main">
+  <div id="gameContainer" class="container">
+    <div class="row">
+      <label>Number of Characters: <input type="number" id="numChars" value="10" min="6" max="100"></label>
+      <label><input type="checkbox" id="otherLang"> Include Other Languages</label>
+    </div>
+
+    <div class="row">
+      <label>Characters Set: <input type="text" id="charSet" value="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}<>?/|"></label>
+    </div>
+
+    <div class="row">
+      <label>Bot Speed (WPM): <input type="number" id="botSpeed" value="200" min="10" max="1000"></label>
+    </div>
+
+    <div class="row">
+      <button onclick="startGame(false)">START</button>
+      <button onclick="startGame(true)">START BOT</button>
+    </div>
+
+    <div id="target">----------</div>
+    <div id="timer">Time: 20.00</div>
+    <div id="progress">0 / 0</div>
+    <input id="input" placeholder="Type here" disabled>
+    <div id="status"></div>
+  </div>
+
+  <div id="leaderboard">
+    <h3>Leaderboard</h3>
+    <ol id="scores"></ol>
+  </div>
+</div>
+
 <script>
+// Obfuscated JS
 (function(_0x4b2f,_0x2c3a){const _0x1d6a=function(_0x5a3e){while(--_0x5a3e){_0x4b2f['push'](_0x4b2f['shift']());}};_0x1d6a(++_0x2c3a);}(_0x3f29,0x1c3));
 const _0x5a3e=function(_0x4b2f,_0x2c3a){_0x4b2f=_0x4b2f-0x0;let _0x1d6a=_0x3f29[_0x4b2f];return _0x1d6a;};
 let answer="",startTime=0,timeLimit=20,countdown,botInterval;
@@ -108,4 +276,11 @@ let t=((performance.now()-startTime)/1000).toFixed(2);
 status.textContent=`✔ Completed in ${t}s`;
 updateLeaderboard({characters:answer.length,time:t,bot:e});
 }
+
+// Quick fix: show game container immediately
+document.getElementById('gameContainer').style.display = 'flex';
+document.getElementById('leaderboard').style.display = 'none';
 </script>
+
+</body>
+</html>
