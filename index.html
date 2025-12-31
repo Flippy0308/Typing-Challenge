@@ -277,9 +277,11 @@ status.textContent=`✔ Completed in ${t}s`;
 updateLeaderboard({characters:answer.length,time:t,bot:e});
 }
 
-// Quick fix: show game container immediately
-document.getElementById('gameContainer').style.display = 'flex';
-document.getElementById('leaderboard').style.display = 'none';
+window.onload = () => {
+  document.getElementById('gameContainer').style.display = 'flex';
+  document.getElementById('leaderboard').style.display = 'none';
+};
+
 </script>
 
 </body>
