@@ -104,7 +104,6 @@
 
   #status, #timer, #progress { margin-top: 10px; font-size: 18px; }
 
-  /* Leaderboard box */
   #leaderboard {
     display: none;
     flex-direction: column;
@@ -114,8 +113,8 @@
     border-radius: 8px;
     width: 100%;
     max-width: 400px;
-    height: 400px; /* Fixed height */
-    overflow-y: auto; /* Scrollbar if content too long */
+    height: 400px;
+    overflow-y: auto;
   }
 
   #leaderboard h3 { margin: 0 0 10px 0; text-align: center; }
@@ -141,6 +140,13 @@
     <button id="confirmUsername">Start</button>
     <div id="usernameError" style="color:red;margin-top:5px;"></div>
   </div>
+
+  <!-- Music controls -->
+  <audio id="bgMusic" loop>
+    <source src="HTMLM.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  <button id="musicToggle" style="margin:10px; padding:5px 10px; font-size:16px; border-radius:6px; border:none; cursor:pointer; background:#00ffcc; color:#000;">Pause Music</button>
 
   <!-- Game container -->
   <div id="gameContainer" class="container">
@@ -218,6 +224,21 @@ confirmUsername.addEventListener('click', () => {
   alert(`Welcome, ${username}!`);
 });
 
+// --- Music control ---
+const music = document.getElementById('bgMusic');
+const musicToggle = document.getElementById('musicToggle');
+
+// Toggle button
+musicToggle.addEventListener('click', () => {
+  if(music.paused){
+    music.play();
+    musicToggle.textContent = "Pause Music";
+  }else{
+    music.pause();
+    musicToggle.textContent = "Play Music";
+  }
+});
+
 // --- Game & leaderboard functions ---
 function showLeaderboard() {
   document.getElementById('gameContainer').style.display = 'none';
@@ -233,7 +254,6 @@ function showGame() {
 function renderLeaderboard(){
   const scoresEl = document.getElementById('scores');
   scoresEl.innerHTML = '';
-  // Sort by fastest time, keep all entries
   const humanScores = leaderboard.filter(e=>e.username && !e.bot);
   humanScores.sort((a,b)=>a.time-b.time);
 
@@ -259,6 +279,12 @@ function startGame(forceBot){
   status.textContent='';
   timer.textContent='Time: 20.00';
   progress.textContent='0 / 0';
+
+  // Auto-play music when game starts
+  if(music.paused) {
+    music.play().catch(e=>console.log("Music play blocked, user interaction required"));
+    musicToggle.textContent = "Pause Music";
+  }
 
   const length = Math.max(6, parseInt(numChars.value)||10);
   let customChars = charSet.value||'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}<>?/|';
@@ -341,3 +367,4 @@ function finish(bot){
 
 </body>
 </html>
+
