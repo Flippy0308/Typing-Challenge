@@ -141,13 +141,6 @@
     <div id="usernameError" style="color:red;margin-top:5px;"></div>
   </div>
 
-  <!-- Music controls -->
-  <audio id="bgMusic" loop>
-    <source src="HTMLM.mp3" type="audio/wav">
-    Your browser does not support the audio element.
-  </audio>
-  <button id="musicToggle" style="margin:10px; padding:5px 10px; font-size:16px; border-radius:6px; border:none; cursor:pointer; background:#00ffcc; color:#000;">Pause Music</button>
-
   <!-- Game container -->
   <div id="gameContainer" class="container">
     <div id="usernameDisplay" style="font-size:20px; font-weight:bold;"></div>
@@ -224,21 +217,6 @@ confirmUsername.addEventListener('click', () => {
   alert(`Welcome, ${username}!`);
 });
 
-// --- Music control ---
-const music = document.getElementById('bgMusic');
-const musicToggle = document.getElementById('musicToggle');
-
-// Toggle button
-musicToggle.addEventListener('click', () => {
-  if(music.paused){
-    music.play();
-    musicToggle.textContent = "Pause Music";
-  }else{
-    music.pause();
-    musicToggle.textContent = "Play Music";
-  }
-});
-
 // --- Game & leaderboard functions ---
 function showLeaderboard() {
   document.getElementById('gameContainer').style.display = 'none';
@@ -279,12 +257,6 @@ function startGame(forceBot){
   status.textContent='';
   timer.textContent='Time: 20.00';
   progress.textContent='0 / 0';
-
-  // Auto-play music when game starts
-  if(music.paused) {
-    music.play().catch(e=>console.log("Music play blocked, user interaction required"));
-    musicToggle.textContent = "Pause Music";
-  }
 
   const length = Math.max(6, parseInt(numChars.value)||10);
   let customChars = charSet.value||'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}<>?/|';
@@ -367,4 +339,3 @@ function finish(bot){
 
 </body>
 </html>
-
