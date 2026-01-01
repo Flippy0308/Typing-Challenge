@@ -120,8 +120,8 @@
   #leaderboard h3 { margin: 0 0 10px 0; text-align: center; }
   #leaderboard ol { padding-left: 20px; margin:0; }
 
-  #usernameContainer { text-align: center; }
-  #usernameContainer input { width: 60%; margin-right: 10px; }
+  #usernameContainer { text-align: center; margin-bottom: 10px; }
+  #usernameContainer input { width: 60%; }
 </style>
 </head>
 <body>
@@ -137,7 +137,6 @@
     <label>Enter your username:
       <input type="text" id="usernameInput" placeholder="Username">
     </label>
-    <button id="confirmUsername">Start</button>
     <div id="usernameError" style="color:red;margin-top:5px;"></div>
   </div>
 
@@ -187,7 +186,6 @@ let leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
 // --- Username system ---
 const usernameContainer = document.getElementById('usernameContainer');
 const usernameInput = document.getElementById('usernameInput');
-const confirmUsername = document.getElementById('confirmUsername');
 const usernameError = document.getElementById('usernameError');
 const usernameDisplay = document.getElementById('usernameDisplay');
 
@@ -201,20 +199,20 @@ if(username){
   document.getElementById('gameContainer').style.display = 'none';
 }
 
-confirmUsername.addEventListener('click', () => {
-  const name = usernameInput.value.trim();
-  if(!name){
-    usernameError.textContent = "Username cannot be empty!";
-    return;
+// Start game on Enter key
+usernameInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){
+    const name = usernameInput.value.trim();
+    if(!name){
+      usernameError.textContent = "Username cannot be empty!";
+      return;
+    }
+    username = name;
+    localStorage.setItem('username', username);
+    usernameContainer.style.display = 'none';
+    showGame();
+    usernameDisplay.textContent = `Username: ${username}`;
   }
-
-  username = name;
-  localStorage.setItem('username', username);
-
-  usernameContainer.style.display = 'none';
-  showGame();
-  usernameDisplay.textContent = `Username: ${username}`;
-  alert(`Welcome, ${username}!`);
 });
 
 // --- Game & leaderboard functions ---
@@ -339,3 +337,4 @@ function finish(bot){
 
 </body>
 </html>
+
