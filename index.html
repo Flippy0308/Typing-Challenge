@@ -154,7 +154,7 @@
     </div>
 
     <div class="row">
-      <label>Bot Speed (WPM): <input type="number" id="botSpeed" value="200" min="10" max="1000000000000000000000"></label>
+      <label>Bot Speed (WPM): <input type="number" id="botSpeed" value="200" min="10" max="1000"></label>
     </div>
 
     <div class="row">
@@ -191,7 +191,6 @@ const confirmUsername = document.getElementById('confirmUsername');
 const usernameError = document.getElementById('usernameError');
 const usernameDisplay = document.getElementById('usernameDisplay');
 
-let usedUsernames = JSON.parse(localStorage.getItem('usedUsernames') || '{}');
 let username = localStorage.getItem('username');
 
 if(username){
@@ -208,15 +207,9 @@ confirmUsername.addEventListener('click', () => {
     usernameError.textContent = "Username cannot be empty!";
     return;
   }
-  if(usedUsernames[name]){
-    usernameError.textContent = "Username already taken!";
-    return;
-  }
 
   username = name;
   localStorage.setItem('username', username);
-  usedUsernames[username] = true;
-  localStorage.setItem('usedUsernames', JSON.stringify(usedUsernames));
 
   usernameContainer.style.display = 'none';
   showGame();
@@ -322,7 +315,7 @@ function runBot(){
   }, intervalMs);
 }
 
-// --- Fixed finish: only human scores are saved ---
+// --- finish: multiple entries per username ---
 function finish(bot){
   clearInterval(countdown);
   clearInterval(botInterval);
