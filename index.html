@@ -194,21 +194,21 @@ const usernameDisplay = document.getElementById('usernameDisplay');
 let usedUsernames = JSON.parse(localStorage.getItem('usedUsernames') || '{}');
 let username = localStorage.getItem('username');
 
-if(username) {
+if(username){
   usernameContainer.style.display = 'none';
   showGame();
   usernameDisplay.textContent = `Username: ${username}`;
-} else {
+}else{
   document.getElementById('gameContainer').style.display = 'none';
 }
 
 confirmUsername.addEventListener('click', () => {
   const name = usernameInput.value.trim();
-  if(!name) {
+  if(!name){
     usernameError.textContent = "Username cannot be empty!";
     return;
   }
-  if(usedUsernames[name]) {
+  if(usedUsernames[name]){
     usernameError.textContent = "Username already taken!";
     return;
   }
@@ -236,119 +236,114 @@ function showGame() {
   document.getElementById('gameContainer').style.display = 'flex';
 }
 
-function updateLeaderboard(entry) {
-  if(entry.characters < 6 || entry.bot) return; // Only human scores
-  entry.username = entry.username || username || "Unknown"; 
-  leaderboard.push(entry);
-  leaderboard.sort((a,b) => a.time - b.time);
-  if(leaderboard.length > 10) leaderboard = leaderboard.slice(0,10);
-  localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-  renderLeaderboard(); // refresh immediately
-}
-
-function renderLeaderboard() {
+function renderLeaderboard(){
   const scoresEl = document.getElementById('scores');
   scoresEl.innerHTML = '';
-  leaderboard.forEach(entry => {
-    if(entry.username && !entry.bot){ // Only show human scores
-      let li = document.createElement('li');
+  leaderboard.forEach(entry=>{
+    if(entry.username && !entry.bot){ // Only human scores
+      const li = document.createElement('li');
       li.textContent = `${entry.username} - ${entry.characters} chars - ${entry.time}s`;
       scoresEl.appendChild(li);
     }
   });
 }
 
-function adjustFontSizeToFitBox(el) {
-  let fontSize = 40;
-  el.style.fontSize = fontSize + 'px';
-  while ((el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight) && fontSize > 10) {
-    fontSize -= 1;
-    el.style.fontSize = fontSize + 'px';
+function adjustFontSizeToFitBox(el){
+  let fontSize=40;
+  el.style.fontSize=fontSize+'px';
+  while((el.scrollWidth>el.clientWidth || el.scrollHeight>el.clientHeight) && fontSize>10){
+    fontSize-=1;
+    el.style.fontSize=fontSize+'px';
   }
 }
 
-function startGame(forceBot) {
+function startGame(forceBot){
   clearInterval(countdown);
   clearInterval(botInterval);
-  status.textContent = '';
-  timer.textContent = 'Time: 20.00';
-  progress.textContent = '0 / 0';
+  status.textContent='';
+  timer.textContent='Time: 20.00';
+  progress.textContent='0 / 0';
 
-  const length = Math.max(6, parseInt(numChars.value) || 10);
-  let customChars = charSet.value || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}<>?/|';
-  if (otherLang.checked) customChars += otherLangChars;
+  const length = Math.max(6, parseInt(numChars.value)||10);
+  let customChars = charSet.value||'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}<>?/|';
+  if(otherLang.checked) customChars+=otherLangChars;
 
-  answer = '';
-  for (let i = 0; i < length; i++) answer += customChars[Math.floor(Math.random() * customChars.length)];
+  answer='';
+  for(let i=0;i<length;i++) answer+=customChars[Math.floor(Math.random()*customChars.length)];
 
-  const targetEl = document.getElementById('target');
-  targetEl.textContent = answer;
+  const targetEl=document.getElementById('target');
+  targetEl.textContent=answer;
   adjustFontSizeToFitBox(targetEl);
 
-  input.value = '';
-  input.disabled = false;
+  input.value='';
+  input.disabled=false;
   input.focus();
-  startTime = performance.now();
-  progress.textContent = `0 / ${answer.length}`;
+  startTime=performance.now();
+  progress.textContent=`0 / ${answer.length}`;
 
-  countdown = setInterval(updateTimer, 50);
+  countdown=setInterval(updateTimer,50);
 
-  if (forceBot) runBot();
+  if(forceBot) runBot();
 }
 
-function updateTimer() {
-  let elapsed = (performance.now() - startTime) / 1000;
-  let remaining = (timeLimit - elapsed).toFixed(2);
-  timer.textContent = `Time: ${remaining}`;
-  if (remaining <= 0) {
+function updateTimer(){
+  let elapsed=(performance.now()-startTime)/1000;
+  let remaining=(timeLimit-elapsed).toFixed(2);
+  timer.textContent=`Time: ${remaining}`;
+  if(remaining<=0){
     clearInterval(countdown);
     clearInterval(botInterval);
-    input.disabled = true;
-    timer.textContent = 'Time: 0.00';
-    status.textContent = '❌ skill issue blud';
+    input.disabled=true;
+    timer.textContent='Time: 0.00';
+    status.textContent='❌ skill issue blud';
   }
 }
 
-input.addEventListener('input', () => {
-  progress.textContent = `${input.value.length} / ${answer.length}`;
-  if (input.value === answer) finish(false);
+input.addEventListener('input',()=>{
+  progress.textContent=`${input.value.length} / ${answer.length}`;
+  if(input.value===answer) finish(false);
 });
 
-function runBot() {
-  input.value = '';
-  let i = 0;
-  let wpm = parseInt(document.getElementById('botSpeed').value) || 200;
-  const charsPerSec = (wpm * 5) / 60;
-  const intervalMs = 1000 / charsPerSec;
+function runBot(){
+  input.value='';
+  let i=0;
+  let wpm=parseInt(document.getElementById('botSpeed').value)||200;
+  const charsPerSec=(wpm*5)/60;
+  const intervalMs=1000/charsPerSec;
 
-  botInterval = setInterval(() => {
-    if (i >= answer.length) {
+  botInterval=setInterval(()=>{
+    if(i>=answer.length){
       clearInterval(botInterval);
       finish(true);
       return;
     }
-    input.value += answer[i++];
-    progress.textContent = `${input.value.length} / ${answer.length}`;
+    input.value+=answer[i++];
+    progress.textContent=`${input.value.length} / ${answer.length}`;
   }, intervalMs);
 }
 
-function finish(bot) {
+// --- Fixed finish: only human scores are saved ---
+function finish(bot){
   clearInterval(countdown);
   clearInterval(botInterval);
-  input.disabled = true;
-  let timeTaken = ((performance.now() - startTime) / 1000).toFixed(2);
-  status.textContent = `✔ Completed in ${timeTaken}s`;
+  input.disabled=true;
+  const timeTaken=((performance.now()-startTime)/1000).toFixed(2);
+  status.textContent=`✔ Completed in ${timeTaken}s`;
 
-  // Only human entries will be saved to leaderboard
-  updateLeaderboard({
-    characters: answer.length,
-    time: timeTaken,
-    bot: bot,
-    username: username // include username
-  });
+  if(!bot && username){
+    leaderboard.push({
+      characters: answer.length,
+      time: parseFloat(timeTaken),
+      bot: false,
+      username: username
+    });
+    leaderboard.sort((a,b)=>a.time-b.time);
+    if(leaderboard.length>10) leaderboard=leaderboard.slice(0,10);
+    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+    renderLeaderboard();
+  }
 }
 </script>
 
 </body>
 </html>
-
