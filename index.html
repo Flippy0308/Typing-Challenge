@@ -104,6 +104,7 @@
 
   #status, #timer, #progress { margin-top: 10px; font-size: 18px; }
 
+  /* Leaderboard box */
   #leaderboard {
     display: none;
     flex-direction: column;
@@ -113,8 +114,8 @@
     border-radius: 8px;
     width: 100%;
     max-width: 400px;
-    overflow-y: auto;
-    max-height: 400px;
+    height: 400px; /* Fixed height */
+    overflow-y: auto; /* Scrollbar if content too long */
   }
 
   #leaderboard h3 { margin: 0 0 10px 0; text-align: center; }
@@ -232,12 +233,14 @@ function showGame() {
 function renderLeaderboard(){
   const scoresEl = document.getElementById('scores');
   scoresEl.innerHTML = '';
-  leaderboard.forEach(entry=>{
-    if(entry.username && !entry.bot){ // Only human scores
-      const li = document.createElement('li');
-      li.textContent = `${entry.username} - ${entry.characters} chars - ${entry.time}s`;
-      scoresEl.appendChild(li);
-    }
+  // Sort by fastest time, keep all entries
+  const humanScores = leaderboard.filter(e=>e.username && !e.bot);
+  humanScores.sort((a,b)=>a.time-b.time);
+
+  humanScores.forEach(entry=>{
+    const li = document.createElement('li');
+    li.textContent = `${entry.username} - ${entry.characters} chars - ${entry.time}s`;
+    scoresEl.appendChild(li);
   });
 }
 
@@ -315,7 +318,7 @@ function runBot(){
   }, intervalMs);
 }
 
-// --- finish: multiple entries per username ---
+// --- finish: allow multiple entries per user ---
 function finish(bot){
   clearInterval(countdown);
   clearInterval(botInterval);
@@ -330,8 +333,6 @@ function finish(bot){
       bot: false,
       username: username
     });
-    leaderboard.sort((a,b)=>a.time-b.time);
-    if(leaderboard.length>10) leaderboard=leaderboard.slice(0,10);
     localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
     renderLeaderboard();
   }
