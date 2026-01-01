@@ -238,6 +238,7 @@ function showGame() {
 
 function updateLeaderboard(entry) {
   if(entry.characters < 6 || entry.bot) return;
+  entry.username = username || "Unknown"; // store username
   leaderboard.push(entry);
   leaderboard.sort((a,b) => a.time - b.time);
   if(leaderboard.length > 10) leaderboard = leaderboard.slice(0,10);
@@ -250,7 +251,7 @@ function renderLeaderboard() {
   leaderboard.forEach(entry => {
     if(entry.characters >=6 && !entry.bot){
       let li = document.createElement('li');
-      li.textContent = `${entry.characters} chars - ${entry.time}s`;
+      li.textContent = `${entry.username} - ${entry.characters} chars - ${entry.time}s`;
       scoresEl.appendChild(li);
     }
   });
@@ -342,4 +343,5 @@ function finish(bot) {
 
 </body>
 </html>
+
 
