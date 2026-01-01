@@ -237,19 +237,20 @@ function showGame() {
 }
 
 function updateLeaderboard(entry) {
-  if(entry.characters < 6 || entry.bot) return;
-  entry.username = username || "Unknown"; // store username
+  if(entry.characters < 6) return;
+  entry.username = entry.username || username || "Unknown"; // ensure username
   leaderboard.push(entry);
   leaderboard.sort((a,b) => a.time - b.time);
   if(leaderboard.length > 10) leaderboard = leaderboard.slice(0,10);
   localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+  renderLeaderboard(); // refresh immediately
 }
 
 function renderLeaderboard() {
   const scoresEl = document.getElementById('scores');
   scoresEl.innerHTML = '';
   leaderboard.forEach(entry => {
-    if(entry.characters >=6 && !entry.bot){
+    if(entry.username){
       let li = document.createElement('li');
       li.textContent = `${entry.username} - ${entry.characters} chars - ${entry.time}s`;
       scoresEl.appendChild(li);
@@ -337,11 +338,16 @@ function finish(bot) {
   input.disabled = true;
   let timeTaken = ((performance.now() - startTime) / 1000).toFixed(2);
   status.textContent = `✔ Completed in ${timeTaken}s`;
-  updateLeaderboard({characters: answer.length, time: timeTaken, bot: bot});
+
+  updateLeaderboard({
+    characters: answer.length,
+    time: timeTaken,
+    bot: bot,
+    username: username // include username
+  });
 }
 </script>
 
 </body>
 </html>
-
 
